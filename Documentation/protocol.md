@@ -23,3 +23,15 @@ Pour garantir une précision et une traçabilité absolues pour le projet Liturg
 
 ## 4. Documentation d'abord
 - La documentation doit être mise à jour *avant* ou *en même temps* que l'implémentation du code.
+
+## 5. Flux de travail Gitea
+Pour ce dépôt Gitea, nous appliquons les règles suivantes :
+- **Branche Protégée** : La branche `main` est protégée. Aucun push direct n'est autorisé.
+- **Pull Requests (PR)** : Toute modification doit passer par une branche intermédiaire et une PR sur Gitea.
+- **Nomenclature des Branches** :
+    - `feature/nom-de-la-feature` : Pour les nouveaux développements.
+    - `fix/nom-du-bug` : Pour les corrections.
+    - `docs/nom-de-la-doc` : Pour les mises à jour de documentation.
+    - `data/nom-de-l-extraction` : Pour tout ce qui concerne les données FileMaker.
+- **Validation** : Une PR ne peut être mergée que si elle respecte les tests et les rapports de fidélité des données (ADR 002).
+- **Suivi** : Utiliser les *Issues* Gitea pour chaque tâche définie dans le `task.md`.
