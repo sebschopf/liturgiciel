@@ -15,6 +15,8 @@ Pour garantir une précision et une traçabilité absolues pour le projet Liturg
     - `fix:` pour les corrections de bugs
     - `docs:` pour les mises à jour de documentation
     - `chore:` pour la maintenance
+- **Règle d'OR** : Chaque commit DOIT mentionner l'ADR correspondant dans son corps ou son titre (ex: `feat: extraction des chants (ADR-002)`). 
+- **Refus Systématique** : Tout commit sans référence à un ADR valide sera rejeté lors de la Pull Request.
 - Chaque PR doit inclure un résumé des changements et une étape de vérification.
 
 ## 3. Vérification de l'Intégrité des Données

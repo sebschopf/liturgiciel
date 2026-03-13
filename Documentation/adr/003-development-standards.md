@@ -13,8 +13,9 @@ Nous adoptons les standards suivants :
 - **Backend** : Rust (Tauri). Utilisation de types stricts et gestion d'erreurs explicite (`Result`).
 - **Frontend** : TypeScript (SvelteKit). Typage obligatoire pour tous les composants et stores.
 
-### 2. Organisation du Code
-- **Logique Métier** : Doit résider en priorité dans le backend Rust (pour la performance et la sécurité des données).
+### 2. Organisation & Traçabilité
+- **Logique Métier** : Doit résider en priorité dans le backend Rust.
+- **Traçabilité des Commits** : Aucun commit n'est accepté sans la mention explicite de l'ADR qui justifie le changement.
 - **Communication** : Utilisation exclusive des `commands` Tauri pour l'échange Frontend <-> Backend.
 
 ### 3. Base de Données (SurrealDB)
