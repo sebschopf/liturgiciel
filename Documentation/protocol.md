@@ -36,4 +36,9 @@ Pour ce dépôt Gitea, nous appliquons les règles suivantes :
     - `docs/nom-de-la-doc` : Pour les mises à jour de documentation.
     - `data/nom-de-l-extraction` : Pour tout ce qui concerne les données FileMaker.
 - **Validation** : Une PR ne peut être mergée que si elle respecte les tests et les rapports de fidélité des données (ADR 002).
+- **Métadonnées de PR** :
+    - **Étiquettes** : Utiliser systématiquement les étiquettes de type (ex: `Kind/Documentation`, `Kind/Feature`) et de statut (ex: `data-fidelity-checked`).
+    - **Assignation** : L'auteur du code (IA ou humain) s'assigne la PR.
+    - **Évaluateur** : L'autre partie (utilisateur ou IA) doit être désignée comme évaluateur officiel.
+    - **Jalons** : Associer chaque PR à un jalon de phase (ex: `Phase 1 : Extraction`).
 - **Suivi** : Utiliser les *Issues* Gitea pour chaque tâche définie dans le `task.md`.
