@@ -22,6 +22,8 @@ jobs:
       - name: Clippy (zéro warning autorisé)
         run: cargo clippy -- -D warnings
         working-directory: src-tauri
+      - name: Installation de cargo-audit
+        run: cargo install cargo-audit --quiet
       - name: Audit de sécurité des dépendances
         run: cargo audit
         working-directory: src-tauri
@@ -100,7 +102,4 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - name: Vérifier les messages de commit de la PR
-        run: |
-          git log origin/main..HEAD --format="%s %b" | while read msg; do
-            echo "$msg" | npx commitlint || exit 1
-          done
+        run: npx commitlint --from origin/main --to HEAD --verbose
