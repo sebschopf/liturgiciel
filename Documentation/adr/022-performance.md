@@ -44,5 +44,5 @@ latence lors de la recherche biblique.
 
 ## Conséquences
 
-- Les bonnes pratiques du tableau de bord de performance (ADR 028 futur) sont à suivre.
+- Le suivi des métriques sera centralisé dans un tableau de bord (ADR 028 futur).
 - Tests de charge obligatoires lors de la Phase 2.
