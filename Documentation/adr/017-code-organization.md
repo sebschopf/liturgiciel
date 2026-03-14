@@ -1,85 +1,41 @@
 # ADR 017 : Organisation du Code et Structure des Dossiers
 
 ## État
+
 Accepté
 
+## Question
+
+> *Comment organiser les fichiers sources pour un projet hybride Rust/SvelteKit ?*
+
 ## Contexte
-Maintenant que les couches sont définies (ADR 013), la question est : **où physiquement chaque fichier doit-il vivre ?** Une structure de dossiers ambiguë entraîne des incohérences entre développeurs (et agents IA). Ce document est prescriptif : il n'y a pas d'interprétation possible.
+
+LiturgiCielauri est un projet Tauri 2.0. Il nécessite une séparation claire entre le frontend (SvelteKit) et le
+backend (Rust), tout en facilitant la communication entre les deux.
 
 ## Décision
 
-### Règle générale
-> Un fichier se range là où sa **couche** le place, et dans le sous-dossier correspondant à son **domaine métier**.
+### 1. Racine du projet
 
-Domaines métier : `fiches`, `dossiers`, `cultes`, `utilisateurs`.
+- `.gitea/` : Workflows et modèles Gitea.
+- `Documentation/` : ADR, protocole, manuels.
+- `src/` : Code source frontend (SvelteKit).
+- `src-tauri/` : Code source backend (Rust).
 
-### Structure prescriptive
+### 2. Structure Frontend (`src/`)
 
-```
-LiturgiCielauri/
-│
-├── .gitea/                        ← Gouvernance Gitea (ADR 010, 011)
-│   ├── workflows/ci.yml
-│   ├── pull_request_template.md
-│   └── issue_template.md
-│
-├── src-tauri/                     ← BACKEND (couche Rust)
-│   ├── src/
-│   │   ├── main.rs                ← Point d'entrée Tauri uniquement
-│   │   ├── errors.rs              ← AppError centralisé (voir ADR 018)
-│   │   ├── commands/              ← Points d'entrée IPC : 1 fichier = 1 domaine
-│   │   │   ├── mod.rs
-│   │   │   ├── fiches.rs
-│   │   │   ├── dossiers.rs
-│   │   │   └── cultes.rs
-│   │   ├── services/              ← Logique métier pure (+ tests #[cfg(test)])
-│   │   │   ├── mod.rs
-│   │   │   ├── fiches.rs
-│   │   │   ├── dossiers.rs
-│   │   │   └── cultes.rs
-│   │   ├── models/                ← Structures Rust serde (Serialize/Deserialize)
-│   │   │   ├── mod.rs
-│   │   │   ├── fiche.rs
-│   │   │   ├── dossier.rs
-│   │   │   └── culte.rs
-│   │   └── db/                    ← Accès SurrealDB uniquement
-│   │       ├── mod.rs
-│   │       ├── connection.rs      ← Initialisation DB
-│   │       └── schema.surql       ← Schéma SurrealQL (source vérité technique)
-│   ├── Cargo.toml                 ← Versions verrouillées (ADR 001)
-│   └── rustfmt.toml               ← Config linter Rust (ADR 003)
-│
-├── src/                           ← FRONTEND (couche Svelte 5)
-│   ├── app.css                    ← Tokens CSS globaux (Open Props, ADR 001)
-│   ├── lib/
-│   │   ├── components/            ← Composants Svelte réutilisables
-│   │   │   ├── Fiche.svelte       ← Avec Fiche.test.ts associé (ADR 005)
-│   │   │   └── ...
-│   │   ├── stores/                ← État global réactif (Svelte $state, ADR 018)
-│   │   │   ├── fiches.ts
-│   │   │   └── navigation.ts
-│   │   ├── api/                   ← Wrappers invoke() Tauri (seul accès au backend)
-│   │   │   └── index.ts
-│   │   └── shortcuts.ts           ← Raccourcis clavier (ADR 014)
-│   └── routes/                    ← Pages SvelteKit (routage défini dans ADR 018)
-│       ├── +layout.svelte
-│       ├── +page.svelte
-│       └── ...
-│
-├── Documentation/
-│   └── adr/                       ← Source de vérité des décisions
-│
-├── CHANGELOG.md                   ← Tenu à jour par l'auteur (ADR 008)
-├── .eslintrc.json                 ← Linting TypeScript (ADR 003)
-├── prettier.config.js             ← Formatage (ADR 003)
-├── .markdownlint.json             ← Linting docs (ADR 003)
-└── package.json                   ← Dépendances frontend versionnées (ADR 001)
-```
+- `lib/` : Composants, services et utilitaires partagés.
+- `routes/` : Pages et API routes de SvelteKit.
+- `static/` : Assets statiques (images, polices).
 
-## Conséquences
-- Un agent IA ou développeur sait immédiatement où chercher ou créer un fichier.
-- Toute exception à cette structure doit être documentée dans le commit qui la crée.
+### 3. Structure Backend (`src-tauri/src/`)
+
+- `commands/` : Points d'entrée appelables par le frontend.
+- `services/` : Logique métier, accès base de données.
+- `models/` : Structures de données Rust.
+- `main.rs` : Initialisation de l'application.
 
 ## Référence
-- Conventions de nommage des fichiers frontend → ADR 023
-- Conventions de nommage des fichiers backend → ADR 024
+
+- Conventions de nommage des fichiers → ADR 023
+- Architecture en Couches → ADR 013

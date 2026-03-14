@@ -1,35 +1,45 @@
-# ADR 020 : Code as Documentation — Nommage et Commentaires
+# ADR 020 : Code as Documentation — Quand et comment commenter
 
 ## État
+
 Accepté
 
 ## Question
-> *Quand est-ce que je commente mon code, et comment ?*
+
+> *Quelles sont les règles pour les commentaires dans le code ?*
 
 ## Contexte
-Un code illisible oblige à faire de l'archéologie pour comprendre l'intention. Le nommage et les commentaires sont la première couche de documentation — ils doivent être suffisants pour comprendre le POURQUOI sans lire une ligne de la documentation externe.
+
+Le code doit être sa propre documentation. Cependant, certaines décisions complexes ou contextes métiers
+nécessitent des explications.
 
 ## Décision
 
 ### Règle fondamentale
-> Les commentaires expliquent le **POURQUOI**. Le code explique le **QUOI**.
 
-```rust
-// ✅ Bon : explique le POURQUOI
-// Le statut "officielle" est protégé par décision synodale (ADR 015).
-// Seul l'administrateur peut le modifier.
-if fiche.statut == Statut::Officielle && !utilisateur.est_admin() {
-    return Err(AppError::Forbidden("Texte officiel protégé".into()));
-}
+Le principe directeur est : **Ne commentez pas ce que fait le code, commentez POURQUOI il le fait.**
 
-// ❌ Mauvais : le QUOI est déjà visible dans le code
-// Vérifie si le statut est officielle et si l'utilisateur est admin
-if fiche.statut == Statut::Officielle && !utilisateur.est_admin() {
-```
+### 1. Commentaires de documentation (Rust/TS)
+
+- Toute fonction publique ou service complexe DOIT avoir un bloc de documentation.
+- **Rust** : Utiliser `///`.
+- **TypeScript** : Utiliser `/** ... */`.
+- Expliquer les invariants métiers.
+
+### 2. Commentaires internes
+
+- À utiliser uniquement pour expliquer une optimisation obscure ou une contrainte héritée.
+
+### 3. Liens vers ADR
+
+- Si une logique complexe découle d'un ADR, inclure la référence (ex: `// Voir ADR-015`).
 
 ## Conséquences
-- Toute fonction `pub` sans `///` dans `services/` est refusée à la revue de code.
+
+- Toute fonction `pub` sans documentation pourra être signalée.
+- La documentation technique peut être générée automatiquement.
 
 ## Référence
+
 - Conventions de nommage frontend → ADR 023
 - Conventions de nommage backend → ADR 024

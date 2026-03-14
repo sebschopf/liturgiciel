@@ -1,43 +1,45 @@
 # ADR 024 : Conventions de Nommage Backend (Rust / Tauri)
 
 ## État
+
 Accepté
 
 ## Question
-> *Quelles sont les conventions de nommage dans le code backend Rust ?*
+
+> *Comment nommer les modules, fonctions et structures dans le backend Rust ?*
 
 ## Décision
 
-| Élément | Convention | Exemple |
-|---|---|---|
-| Module / Fichier | `snake_case` | `fiches.rs`, `temps_liturgique.rs` |
-| Fonction publique | `snake_case`, verbe + nom | `get_fiche`, `rechercher_par_temps` |
-| Commande Tauri | `snake_case`, préfixe d'action | `get_fiche`, `creer_dossier`, `supprimer_dossier` |
-| Struct | `PascalCase` | `Fiche`, `TempsLiturgique`, `AppError` |
-| Enum | `PascalCase`, variantes `PascalCase` | `Statut::Officielle` |
-| Variable locale | `snake_case`, intention explicite | `fiche_trouvee`, `temps_avent` |
-| Constante | `SCREAMING_SNAKE_CASE` | `MAX_RESULTATS_RECHERCHE` |
-| Booléen | Préfixe `est_`, `peut_`, `a_` | `est_admin`, `peut_modifier` |
-| Paramètre de durée de vie | `'a`, `'db` | Minuscule, court |
+### 1. Modules et Fichiers
 
-### Préfixes d'action pour les commandes Tauri
-| Préfixe | Usage |
-|---|---|
-| `get_` | Récupérer un enregistrement unique |
-| `lister_` | Récupérer une liste |
-| `rechercher_` | Recherche filtrée |
-| `creer_` | Créer un enregistrement |
-| `modifier_` | Modifier un enregistrement existant |
-| `supprimer_` | Supprimer un enregistrement |
+- **Format** : `snake_case`
+- **Exemple** : `src/services/db_manager.rs`
+- **Justification** : Standard Rust (RFC 433).
 
-### Langue
-- Tous les identifiants métier en **français** (`fiche`, `dossier`, `temps_liturgique`).
-- Les termes techniques Rust restent en anglais (`error`, `result`, `handler`).
+### 2. Structures, Enums et Traits
 
-### Interdictions
-- Abréviations : `f`, `d`, `usr`, `res` → interdit.
-- Préfixe `do_`, `handle_`, `process_` sans précision → interdit.
+- **Format** : `PascalCase`
+- **Exemple** : `struct GestionnaireFiche`, `enum TypeVerset`
+
+### 3. Fonctions et Variables
+
+- **Format** : `snake_case`
+- **Langue** : Français (ADR 018)
+- **Exemple** : `fn extraire_texte()`, `let liste_tags = vec![]`
+
+### 4. Macros
+
+- **Format** : `snake_case!`
+- **Exemple** : `log_info!()`
+
+### 5. Commands Tauri (Appelables depuis le JS)
+
+- **Format** : `snake_case` (côté Rust), mappées en `camelCase` par Tauri si configuré, mais nous préférons garder la cohérence.
+- **Décision** : Les commands Tauri utilisent le `snake_case` côté Rust.
+- **Exemple** : `#[tauri::command] fn get_fiche_by_id()`
 
 ## Référence
-- Structure des dossiers → ADR 017
-- Documentation des fonctions publiques → ADR 020
+
+- Organisation du Code → ADR 017
+- Code as Documentation → ADR 020
+- Langue de l'interface → ADR 018

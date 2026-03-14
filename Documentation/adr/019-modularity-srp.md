@@ -1,40 +1,43 @@
-# ADR 019 : Modularité & Principe de Responsabilité Unique
+# ADR 019 : Modularité & Principe de Responsabilité Unique (SRP, DRY)
 
 ## État
+
 Accepté
 
 ## Question
-> *Combien de responsabilités a ce module, cette fonction, ce composant ?*
+
+> *Comment organiser le code interne pour éviter la dette technique ?*
 
 ## Contexte
-Sans règle explicite, les fonctions grossissent, les modules se mélangent, et le code devient impossible à tester ou à modifier sans tout casser.
+
+LiturgiCielauri est un projet à long terme. Un code monolithique ou trop couplé rendra les futures évolutions
+(nouvelles langues, nouveaux exports) impossibles.
 
 ## Décision
 
-**Un module, une responsabilité. Une fonction, une action.**
+### 1. Single Responsibility Principle (SRP)
 
-### Rust (Backend)
-- `services/fiches.rs` gère uniquement les Fiches. Il ne contient pas de logique de Dossiers ou de Cultes.
-- Une fonction fait **une seule chose** : `get_fiche()` récupère — elle ne valide pas, ne transforme pas, ne log pas.
-- Règle de taille : une fonction > **30 lignes** est un signal de refactorisation. La scinder.
-- La logique partagée entre plusieurs services est extraite dans un module `utils/` ou `services/common.rs`.
+Chaque fichier ou module doit avoir une seule raison de changer.
 
-### Svelte 5 (Frontend)
-- Un composant = une responsabilité d'affichage. `Fiche.svelte` affiche une fiche. Il ne sait pas chercher ni classer.
-- Les Stores sont organisés par domaine (`fiches.ts`, `dossiers.ts`). Pas de store global fourre-tout.
-- Un Store qui fait plus de 50 lignes est un signal de découpage.
+- Un module pour l'extraction SQLite.
+- Un module pour la transformation en JSON.
+- Un module pour l'injection SurrealDB.
 
-### Ouvert/Fermé (O de SOLID)
-> Le code existant ne se modifie pas — il s'étend.
+### 2. Don't Repeat Yourself (DRY)
 
-- Ajouter `Célébrations` ne modifie pas `services/fiches.rs`. On crée `services/celebrations.rs`.
-- Les commandes Tauri exposent des points d'entrée stables. On ajoute des fonctions, on ne réécrit pas les existantes.
+Toute logique répétée (ex: formatage de date biblique) doit être extraite dans un utilitaire partagé.
 
-### DRY (Don't Repeat Yourself)
-- Un traitement métier n'existe qu'en un seul endroit : dans `services/`.
-- Si deux commandes partagent une logique, elle est extraite dans un service commun.
-- Les constantes (statuts, types de moment liturgique) sont centralisées dans `models/`.
+### 3. Modularité par domaine
+
+Le code est découpé par entité métier (Fiche, Verset, Auteur) plutôt que par type technique.
+
+## Référence
+
+- Architecture en Couches → ADR 013
+- Organisation du Code → ADR 017
 
 ## Conséquences
-- Une PR contenant une fonction > 30 lignes non justifiée peut être refusée.
-- Toute logique dupliquée dans deux modules est un bug de conception, pas de code.
+
+- Un traitement métier n'est jamais dupliqué entre le frontend et le backend.
+- Les tests unitaires sont plus faciles à écrire car les responsabilités sont isolées.
+- Une PR contenant une fonctionnalité "touche-à-tout" sera systématiquement refusée.

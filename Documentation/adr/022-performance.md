@@ -1,58 +1,48 @@
 # ADR 022 : Performance Délibérée du Code
 
 ## État
+
 Accepté
 
 ## Question
-> *Quand et comment optimiser les performances, sans optimisation prématurée ?*
+
+> *Quelles sont les cibles de performance et comment les garantir ?*
 
 ## Contexte
-L'optimisation prématurée est une source majeure de complexité inutile. Mais négliger les choix évidents de performance crée une dette difficile à résorber. Ce document définit les règles de performance qui s'appliquent **dès l'écriture** (sans mesurer) et celles qui nécessitent **une mesure avant d'agir**.
+
+LiturgiCielauri doit être réactif, même avec des milliers de fiches. L'utilisateur ne doit jamais percevoir de
+latence lors de la recherche biblique.
 
 ## Décision
 
 ### Règle fondamentale
-> Appliquer les bonnes pratiques évidentes dès l'écriture. N'optimiser davantage que si une mesure prouve un problème.
 
----
+**"No blocking the UI thread"**. Toutes les opérations lourdes (calculs, accès DB) se font dans le backend Rust.
 
-### Optimisations appliquées systématiquement (sans mesurer)
+### Stratégies par couche
 
 #### Rust
-| Pratique | Correct ✅ | À éviter ❌ | Raison |
-|---|---|---|---|
-| Références vs copies | `fn f(s: &str)` | `fn f(s: String)` | Clone inutile = allocation mémoire |
-| Async correct | `async fn` + `await` | Blocage du thread | Tauri = multithreadé |
-| Gestion d'erreurs | `?` operator | `.unwrap()` | Panique en production |
+
+- Utilisation de `rayon` pour le parallélisme si nécessaire sur les gros volumes de données.
+- Utilisation des itérateurs et évitement des copies inutiles de mémoire (`Zero-copy` quand possible).
 
 #### Svelte 5
-| Pratique | Correct ✅ | À éviter ❌ | Raison |
-|---|---|---|---|
-| Valeurs calculées | `$derived(total)` | Calcul dans le template | Recalcul à chaque render |
-| Images | `loading="lazy"` | Chargement immédiat | Délai perçu à l'ouverture |
-| Listes longues | Composant `VirtualList` | `{#each grand_tableau}` | Rendu de milliers de DOM nodes |
+
+- Utilisation des `Runes` (`$state`, `$derived`) pour une réactivité fine et performante.
+- Évitement des re-rendus massifs de listes (utilisation de `{#each ... (key)}`).
 
 #### SurrealDB
-| Pratique | Correct ✅ | À éviter ❌ | Raison |
-|---|---|---|---|
-| Index sur champs filtrés | `DEFINE INDEX ON fiche FIELDS titre` | Aucun index | Scan complet de table |
-| Limiter les résultats | `SELECT ... LIMIT 50` | `SELECT *` sans limite | Résultats infinis non paginés |
-| Champs nécessaires | `SELECT titre, texte FROM fiche` | `SELECT *` | Données inutiles transférées |
 
----
+- Utilisation systématique d'index sur les champs de recherche fréquents (titre, tags, langue).
+- Utilisation des relations de graphe pour éviter les JOINs SQL coûteux.
 
-### Optimisations conditionnelles (mesurer d'abord)
+## Métriques cibles
 
-Ces optimisations ne s'appliquent **que si une mesure (profiling) prouve un goulot d'étranglement** :
-
-| Optimisation | Outil de mesure | Seuil déclencheur |
-|---|---|---|
-| Cache LRU sur les services | `cargo flamegraph` | Requête > 50ms répétée |
-| Pagination des résultats | Temps de réponse UI | > 200ms pour une liste |
-| Compilation Svelte en SSG | Lighthouse score | FCP > 1.5s |
-
-**Avant toute optimisation conditionnelle** : ouvrir une Issue `Kind/Enhancement` avec les mesures comme preuve. Pas de micro-optimisation sans données.
+- **Démarrage à froid** : < 1 seconde.
+- **Recherche plein texte** : < 100ms.
+- **Navigation entre fiches** : < 50ms (instantanéité perçue).
 
 ## Conséquences
-- Les bonnes pratiques du tableau "systématique" sont vérifiables à la revue de code.
-- Aucune optimisation avancée sans mesure documentée dans la PR.
+
+- Les bonnes pratiques du tableau de bord de performance (ADR 028 futur) sont à suivre.
+- Tests de charge obligatoires lors de la Phase 2.

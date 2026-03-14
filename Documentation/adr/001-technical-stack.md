@@ -1,9 +1,11 @@
 # ADR 001 : Sélection de la Pile Technique (Stack)
 
 ## État
+
 Accepté
 
 ## Contexte
+
 LiturgiCiel 2010 est une application FileMaker Pro 10 obsolète, fermée, non portable et sans documentation. Elle doit être entièrement réécrite pour fonctionner nativement sur Windows, macOS et Linux, avec des performances élevées, un design professionnel adapté à l'étude biblique, et une intégrité absolue des données.
 
 ## Décision
@@ -27,6 +29,7 @@ LiturgiCiel 2010 est une application FileMaker Pro 10 obsolète, fermée, non po
 ### Justifications des choix technologiques
 
 #### Tauri (au lieu d'Electron ou d'un installeur MSI custom)
+
 | Critère | Tauri ✅ | Electron ❌ |
 |---|---|---|
 | Taille du binaire | ~5-10 Mo | ~150-200 Mo |
@@ -34,9 +37,11 @@ LiturgiCiel 2010 est une application FileMaker Pro 10 obsolète, fermée, non po
 | Langage backend | Rust (sécurité mémoire) | Node.js |
 | Multi-plateforme | Windows, macOS, Linux | Idem |
 | Installeur natif | .exe, .deb, .dmg | Idem mais plus lourd |
+
 - **Décision** : Tauri garantit un logiciel biblique léger, rapide et sécurisé installable via un `.exe` sur Windows.
 
 #### Svelte 5 avec Runes (au lieu de Vue, React ou Angular)
+
 | Critère | Svelte 5 ✅ | React ❌ |
 |---|---|---|
 | Réactivité | Runes (`$state`, `$derived`) compilées | Virtual DOM runtime |
@@ -44,6 +49,7 @@ LiturgiCiel 2010 est une application FileMaker Pro 10 obsolète, fermée, non po
 | Courbe d'apprentissage | Faible | Moyenne / Élevée (hooks, JSX) |
 | TypeScript natif | Oui | Partiel (nécessite config) |
 | Compatibilité Tauri | Officielle et documentée | Non officielle |
+
 - **Décision** : Svelte 5 avec les **Runes** (`$state`, `$derived`, `$effect`, `$props`) est le choix le plus performant et le plus lisible pour une interface de lecture intensive.
 - **Runes Svelte 5 utilisées** :
   - `$state` : état réactif local (ex: verset affiché)
@@ -53,6 +59,7 @@ LiturgiCiel 2010 est une application FileMaker Pro 10 obsolète, fermée, non po
   - `$bindable` : liaison bidirectionnelle contrôlée
 
 #### SurrealDB (au lieu de SQLite)
+
 | Critère | SurrealDB ✅ | SQLite ❌ |
 |---|---|---|
 | Modèle de données | Multi-modèle (graphe, doc, relationnel) | Relationnel uniquement |
@@ -61,21 +68,25 @@ LiturgiCiel 2010 est une application FileMaker Pro 10 obsolète, fermée, non po
 | Vecteur sémantique | Supporté (Phase 3) | Non disponible |
 | Rust SDK natif | Officiel | Via `rusqlite` |
 | Performance lectures | Très élevée | Elevée |
+
 - **Décision** : Les textes bibliques ont des relations complexes (parallèles, références croisées, commentaires, variantes). SurrealDB modélise cela naturellement là où SQLite nécessiterait des dizaines de JOINs.
 
 #### CSS Classique + Open Props (au lieu de Tailwind ou d'un framework CSS)
+
 | Critère | CSS + Open Props ✅ | Tailwind ❌ |
 |---|---|---|
 | Contrôle typographique | Total (variable par variable) | Limité aux utilitaires |
 | Lisibilité HTML | Propre (classes sémantiques) | Pollué (classes inline) |
 | Custom Properties | Native | Via plugin |
 | Design éditorial | Idéal | Difficile |
+
 - **Open Props** (`open-props`) : bibliothèque de variables CSS prédéfinies (couleurs, espacement, typographie, ombres). Elle fournit un système de tokens cohérent sans imposer de style — parfait pour un design éditorial sur mesure.
 - **Aucun framework de composants imposé** (pas de Shadcn, pas de DaisyUI) : les composants sont écrits from scratch pour contrôle total du rendu biblique.
 
 ---
 
 ## Conséquences
+
 - Binaire final : ~10 Mo (Windows `.exe`), identique sur les 3 plateformes.
 - Réactivité Svelte 5 Runes = meilleure performance d'affichage des listes de versets.
 - SurrealDB permet la recherche croisée sans requêtes SQL complexes.

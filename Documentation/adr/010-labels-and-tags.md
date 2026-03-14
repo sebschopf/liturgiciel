@@ -1,9 +1,11 @@
 # ADR 010 : Étiquettes Gitea & Tags Git Protégés
 
 ## État
+
 Accepté
 
 ## Contexte
+
 Gitea fournit un jeu d'étiquettes prédéfini lors de l'initialisation d'un dépôt. Ce référentiel d'étiquettes doit être enrichi avec les étiquettes spécifiques au projet, et les tags Git doivent être protégés pour éviter toute création accidentelle de versions.
 
 ## Décision
@@ -13,11 +15,13 @@ Gitea fournit un jeu d'étiquettes prédéfini lors de l'initialisation d'un dé
 Ces étiquettes sont déjà présentes dans Gitea et font partie de notre protocole :
 
 #### `Compat/`
+
 | Étiquette | Usage |
 |---|---|
 | `Compat/Breaking` | Changement incompatible — déclenche une version MAJEUR (ADR 006) |
 
 #### `Kind/`
+
 | Étiquette | Usage |
 |---|---|
 | `Kind/Bug` | Quelque chose ne fonctionne pas |
@@ -28,6 +32,7 @@ Ces étiquettes sont déjà présentes dans Gitea et font partie de notre protoc
 | `Kind/Testing` | PR ou issue liée aux tests (ADR 005) |
 
 #### `Priority/`
+
 | Étiquette | Valeur | Usage |
 |---|---|---|
 | `Priority/Critical` | 1 | Bloquant — ponctuation ou sens biblique erroné |
@@ -36,6 +41,7 @@ Ces étiquettes sont déjà présentes dans Gitea et font partie de notre protoc
 | `Priority/Low` | 4 | Peut attendre |
 
 #### `Reviewed/`
+
 | Étiquette | Usage |
 |---|---|
 | `Reviewed/Confirmed` | Issue confirmée et reproductible |
@@ -44,6 +50,7 @@ Ces étiquettes sont déjà présentes dans Gitea et font partie de notre protoc
 | `Reviewed/Won't Fix` | Problème connu, pas de correction prévue |
 
 #### `Status/`
+
 | Étiquette | Usage |
 |---|---|
 | `Status/Abandoned` | Travail commencé mais abandonné |
@@ -74,6 +81,7 @@ Les tags de version **ne doivent être créés que lors d'une release officielle
 - Restreindre la création/suppression à **`mous_tik`** uniquement
 
 ## Conséquences
+
 - Vocabulaire commun et cohérent pour toutes les Issues et PRs.
 - Les 4 étiquettes spécifiques au projet doivent être créées manuellement.
 - Les tags de version sont protégés et traçables (ADR 006).

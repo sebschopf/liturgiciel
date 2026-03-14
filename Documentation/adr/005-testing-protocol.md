@@ -1,28 +1,22 @@
 # ADR 005 : Protocole de Tests & Documentation Testée
 
 ## État
+
 Accepté
 
+## Question
+
+> *Comment garantir que le code et les données sont valides à chaque étape du développement ?*
+
 ## Contexte
-LiturgiCielauri manipule des textes bibliques de haute précision. Une seule virgule manquante peut changer le sens théologique d'un passage. Par ailleurs, toute documentation contenant du code doit être vérifiable : un exemple de code non testé est un mensonge potentiel.
+
+La fidélité biblique est l'exigence numéro 1. Une erreur de ponctuation est une régression majeure.
+
+---
 
 ## Décision
 
-### 1. Principe : Tout Code dans la Documentation Est Testé
-
-> **Règle absolue** : Tout extrait de code dans un document `.md` du dossier `Documentation/` qui illustre une interaction avec les données ou l'API doit avoir un test associé dans le code source, avec une preuve d'exécution.
-
-**Format de preuve dans la documentation :**
-````markdown
-​```rust
-// Exemple : récupérer un verset
-let verset = services::get_verset("Jn 3:16").await?;
-​```
-✅ **Test associé** : `src-tauri/src/services/tests.rs::test_get_verset` — Résultat : `PASS`  
-🔒 **Checksum SHA-256 de la donnée** : `e3b0c44298fc1c149afb...`
-````
-
-### 2. Tests des Données (Priorité Absolue)
+### 1. Tests d'Intégrité des Données (Fidélité Critique)
 
 Tout pipeline d'extraction ou de migration doit passer ces vérifications avant fusion :
 
@@ -34,7 +28,8 @@ Tout pipeline d'extraction ou de migration doit passer ces vérifications avant 
 | Échantillonnage | Manuel | Revue de 5 passages aléatoires | Validation humaine signée |
 
 **Rapport obligatoire** pour toute PR de type `Kind/Data` :
-```
+
+```markdown
 ## Rapport de Haute Fidélité
 - SHA-256 source : [hash]
 - SHA-256 cible  : [hash]
@@ -56,6 +51,7 @@ Tout pipeline d'extraction ou de migration doit passer ces vérifications avant 
 **Outil** : `vitest` + `@testing-library/svelte` (compatibilé Svelte 5).
 
 #### Tests des Runes Svelte 5
+
 Les Runes sont la fonctionnalité centrale de Svelte 5. Chaque Rune utilisée doit avoir un test dédié :
 
 | Rune | Ce qu'on teste | Exemple de test |
@@ -67,6 +63,7 @@ Les Runes sont la fonctionnalité centrale de Svelte 5. Chaque Rune utilisée do
 | `$bindable` | La liaison bidirectionnelle fonctionne | L'input de recherche synchro le store parent |
 
 **Format obligatoire pour chaque composant :**
+
 ```typescript
 // Verset.test.ts
 import { render, screen } from '@testing-library/svelte';
@@ -91,7 +88,8 @@ test('affiche le texte du verset', () => {
 ### 6. Tests de Linting (qualité du code)
 
 Intégrés dans le pipeline CI (ADR 011) :
-```
+
+```bash
 cargo fmt --check
 cargo clippy -- -D warnings
 npm run check
@@ -100,6 +98,6 @@ markdownlint Documentation/**/*.md
 ```
 
 ## Conséquences
-- La documentation est une source de vérité vivante et vérifiable.
-- Toute PR de type `Kind/Data` est bloquée sans rapport de haute fidélité.
-- Un agent IA peut régénérer les preuves et les comparer aux valeurs de référence.
+
+- Zéro régression biblique.
+- Documentation technique toujours synchro avec les tests.

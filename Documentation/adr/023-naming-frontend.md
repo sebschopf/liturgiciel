@@ -1,35 +1,47 @@
 # ADR 023 : Conventions de Nommage Frontend (Svelte 5 / TypeScript)
 
 ## État
+
 Accepté
 
 ## Question
-> *Quelles sont les conventions de nommage dans le code frontend ?*
+
+> *Comment nommer les fichiers, composants et variables dans le frontend ?*
 
 ## Décision
 
-| Élément | Convention | Exemple |
-|---|---|---|
-| Composant Svelte | `PascalCase` | `Fiche.svelte`, `ListeDossiers.svelte` |
-| Test de composant | Même nom + `.test.ts` | `Fiche.test.ts` |
-| Test d'accessibilité | Même nom + `.a11y.test.ts` | `Fiche.a11y.test.ts` |
-| Store Svelte | `camelCase`, nom du domaine | `fiches.ts`, `navigation.ts` |
-| Fichier de route | Convention SvelteKit | `+page.svelte`, `+layout.svelte` |
-| Fonction TypeScript | `camelCase`, verbe + nom | `getFiche`, `creerDossier` |
-| Variable | `camelCase`, intention explicite | `ficheSelectionnee`, `resultatsRecherche` |
-| Type / Interface | `PascalCase` | `Fiche`, `TempsLiturgique` |
-| Constante globale | `SCREAMING_SNAKE_CASE` | `STATUT_OFFICIELLE` |
-| Prop de composant | `camelCase` | `tempsLiturgique`, `estEditable` |
-| Booléen | Préfixe `est`, `peut`, `a` | `estOfficielle`, `peutModifier` |
+### 1. Composants Svelte
 
-### Langue
-- Tous les identifiants sont en **français** (noms de domaine, variables métier).
-- L'anglais est réservé aux termes techniques sans équivalent (`store`, `layout`, `props`).
+- **Format** : `PascalCase`
+- **Suffixe** : `.svelte`
+- **Exemple** : `LivreBiblique.svelte`, `BoutonAction.svelte`
+- **Justification** : Distingue visuellement les composants des éléments HTML standards.
 
-### Interdictions
-- Abréviations : `f`, `d`, `usr`, `res` → interdit.
-- Noms génériques : `data`, `result`, `items`, `obj` → interdit.
+### 2. Dossiers
+
+- **Format** : `kebab-case`
+- **Exception** : Les dossiers spéciaux de SvelteKit comme `(app)` ou `[id]`.
+- **Exemple** : `lib/components/`, `routes/api/v1/`
+
+### 3. Fichiers TypeScript/JavaScript
+
+- **Format** : `kebab-case`
+- **Exemple** : `auth-service.ts`, `data-mapper.js`
+
+### 4. Variables et Fonctions
+
+- **Format** : `camelCase`
+- **Langue** : Français (ADR 018)
+- **Exemple** : `const listeFiches = []`, `function recupererVerset() {}`
+
+### 5. Classes CSS
+
+- **Format** : `kebab-case`
+- **Méthode** : BEM simplifié ou composants encapsulés.
+- **Exemple** : `.carte-fiche`, `.btn-primaire`
 
 ## Référence
-- Convention de fichiers → ADR 017
-- Convention de commentaires → ADR 020
+
+- Organisation du Code → ADR 017
+- Code as Documentation → ADR 020
+- Langue de l'interface → ADR 018

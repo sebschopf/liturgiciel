@@ -1,66 +1,43 @@
 # ADR 021 : Injection de Dépendances & Testabilité
 
 ## État
+
 Accepté
 
 ## Question
-> *Comment rendre ce code testable sans modifier l'environnement de production ?*
+
+> *Comment structurer le code pour faciliter les tests unitaires et le mocking ?*
 
 ## Contexte
-Un code qui instancie lui-même ses dépendances (connexion DB, clients HTTP) est impossible à tester sans un environnement réel. L'injection de dépendances inverse ce rapport : le module reçoit ce dont il a besoin — il ne le crée pas.
+
+Le projet nécessite une haute fiabilité, particulièrement pour la logique d'extraction et de migration. Un code
+fortement couplé aux entrées/sorties (système de fichiers, base de données) est difficile à tester.
 
 ## Décision
 
-### Règle fondamentale
-> Les modules ne créent pas leurs dépendances. Ils les **reçoivent en paramètre**.
+### 1. Utilisation de Traits pour les services
 
-### Rust — Injection de la connexion DB
+Chaque service backend doit définir son comportement via un `trait` avant son implémentation.
 
-```rust
-// ✅ Testable : la connexion est injectée
-pub async fn get_fiche(db: &Surreal<Db>, id: &str) -> Result<Fiche, AppError>
+### 2. Injection par constructeur
 
-// ❌ Non testable : connexion hardcodée, impossible à mocker
-pub async fn get_fiche(id: &str) -> Result<Fiche, AppError> {
-    let db = db::connect().await?; // impossible à remplacer dans un test
-}
-```
+Les services reçoivent leurs dépendances (traits) via leur constructeur (ex: `new(db: Box<dyn DatabaseTrait>)`).
 
-**En test**, on passe une connexion vers une DB en mémoire (`Surreal::new(Mem::default())`).
-**En production**, Tauri injecte la connexion réelle via l'état global (`tauri::State<DbConnection>`).
+### 3. Mocking en Rust
 
-### Svelte 5 — Injection via Props
+Utilisation de la crate `mockall` pour générer des mocks automatiques pendant les tests.
 
-```svelte
-<!-- ✅ Testable : les données arrivent via $props -->
-<script lang="ts">
-  let { fiche }: { fiche: Fiche } = $props();
-</script>
+### 4. Structure Frontend
 
-<!-- ❌ Non testable : le composant appelle lui-même l'API -->
-<script lang="ts">
-  const fiche = await getFiche(id); // impossible à mocker dans Vitest
-</script>
-```
+Utilisation des `stores` Svelte et des `contextes` pour injecter les services API, permettant de substituer le
+backend par des mocks en environnement de test Vitest.
 
-Les composants Svelte reçoivent leurs données via `$props`. Les appels API se font dans les **Stores** ou dans les **layouts/routes**, pas directement dans les composants.
+## Référence
 
-### Les mocks dans les tests Rust
-```rust
-#[cfg(test)]
-mod tests {
-    use surrealdb::engine::local::Mem;
-
-    #[tokio::test]
-    async fn test_get_fiche_introuvable() {
-        let db = Surreal::new::<Mem>(()).await.unwrap();
-        let result = get_fiche(&db, "id_inexistant").await;
-        assert!(matches!(result, Err(AppError::NotFound(_))));
-    }
-}
-```
+- Protocole de Tests → ADR 005
+- Architecture en Couches → ADR 013
 
 ## Conséquences
-- Toute fonction de `services/` qui crée une connexion DB en interne est un échec de conception.
-- Les composants Svelte qui appellent l'API directement ne peuvent pas être testés avec Vitest.
-- Couverture de tests de 80% atteignable uniquement si ce principe est respecté (ADR 005).
+
+- Toute fonction de `services/` doit être testable sans nécessiter une instance réelle de SurrealDB.
+- Les tests unitaires sont rapides car ils n'utilisent aucune ressource externe.

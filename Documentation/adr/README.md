@@ -1,8 +1,10 @@
 # Index des Décisions Architecturales (ADR)
 
-Ce document regroupe toutes les décisions structurantes du projet LiturgiCielauri, classées par thématique. Chaque contributeur (humain ou bot) doit se référer à ces documents avant toute modification.
+Ce document regroupe toutes les décisions structurantes du projet LiturgiCielauri, classées par thématique.
+Chaque contributeur (humain ou bot) doit se référer à ces documents avant toute modification.
 
-> **Règle** : Si une situation n'est pas couverte par un ADR, une nouvelle proposition doit être soumise via une Pull Request avant toute implémentation.
+> **Règle** : Si une situation n'est pas couverte par un ADR, une nouvelle proposition doit être soumise.
+> Les propositions se font via une Pull Request avant la moindre implémentation.
 
 ## Fondations & Stack
 
@@ -49,5 +51,5 @@ Ce document regroupe toutes les décisions structurantes du projet LiturgiCielau
 
 ## Données & Schéma SurrealDB
 
-- [ADR 015 : Entités du Domaine Métier (Fiche, Culte, Dossier, Célébration...)](015-surrealdb-schema.md)
-- [ADR 016 : Stratégie de Relations (Champ direct vs Graphe SurrealDB)](016-data-relations.md)
+- [ADR 015 : Entités du Domaine Métier (Fiche, Culte, Dossier...)](015-surrealdb-schema.md)
+- [ADR 016 : Stratégie de Relations (Champ direct vs Graphe)](016-data-relations.md)
