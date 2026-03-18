@@ -51,5 +51,11 @@ Chaque contributeur (humain ou bot) doit se référer à ces documents avant tou
 
 ## Données & Schéma SurrealDB
 
-- [ADR 015 : Entités du Domaine Métier (Fiche, Culte, Dossier...)](015-surrealdb-schema.md)
+- ~~[ADR 015 : Entités du Domaine Métier](015-surrealdb-schema.md)~~ — **Remplacé par ADR 029**
 - [ADR 016 : Stratégie de Relations (Champ direct vs Graphe)](016-data-relations.md)
+- [ADR 028 : Schéma des Données Source FileMaker (structure découverte)](028-filemaker-source-schema.md)
+- [ADR 029 : Schéma Normalisé des Données LiturgiCielauri — **remplace ADR 015**](029-normalized-data-schema.md)
+
+## Migration des Données FileMaker
+
+- [ADR 027 : Stratégie d'Extraction des Données FileMaker (XOR 0x5A)](027-extraction-strategy.md)

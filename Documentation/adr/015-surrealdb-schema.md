@@ -2,7 +2,9 @@
 
 ## État
 
-Amendé (2026-03-14)
+~~Amendé~~ **Remplacé par [ADR 029 : Schéma Normalisé des Données LiturgiCielauri](029-normalized-data-schema.md)** (2026-03-16)
+
+> Ce document est conservé pour traçabilité historique. Il ne doit plus être utilisé comme référence pour l'implémentation.
 
 ## Question
 

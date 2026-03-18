@@ -59,3 +59,6 @@ Thumbs.db
 # ─── LiturgiCiel — Fichiers FileMaker source (trackés via Git LFS) ─────────────
 # NE PAS ignorer les .lit — ils sont versionnés via LFS (ADR 002)
 # *.lit  ← intentionnellement commenté
+
+# ─── Données intermédiaires ──────────────────────────────────────────────────
+data/

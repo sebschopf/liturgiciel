@@ -1,0 +1,35 @@
+🔍 Passe 1b — Exploration des fichiers .lit secondaires
+
+📄 Dossiers.lit...
+   → 507,904 octets bruts décodés
+   → Format détecté : UNKNOWN  (0 séparateurs)
+   → 1 records extraits
+
+📄 Temps.lit...
+   → 155,648 octets bruts décodés
+   → Format détecté : UNKNOWN  (0 séparateurs)
+   → 1 records extraits
+
+📄 Catalogues.lit...
+   → 700,416 octets bruts décodés
+   → Format détecté : UNKNOWN  (0 séparateurs)
+   → 1 records extraits
+
+📄 Liens.lit...
+   → 405,504 octets bruts décodés
+   → Format détecté : UNKNOWN  (0 séparateurs)
+   → 1 records extraits
+
+📄 Transfert.lit...
+   → 8,290,304 octets bruts décodés
+   → Format détecté : UNKNOWN  (0 séparateurs)
+   → 1 records extraits
+
+✅ Export → /home/mous_tik/Documents/LiturgiCiel 2010 WIN/LiturgiCielauri/liturgi_secondary_raw.json
+
+📊 Résumé :
+   ✅  Dossiers.lit — format UNKNOWN — 1 records
+   ✅  Temps.lit — format UNKNOWN — 1 records
+   ✅  Catalogues.lit — format UNKNOWN — 1 records
+   ✅  Liens.lit — format UNKNOWN — 1 records
+   ✅  Transfert.lit — format UNKNOWN — 1 records
