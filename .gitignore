@@ -62,3 +62,6 @@ Thumbs.db
 
 # ─── Données intermédiaires ──────────────────────────────────────────────────
 data/
+
+# ─── Dossiers binaires redondants (locaux) ───────────────────────────
+LitugiCiel/
