@@ -84,7 +84,7 @@ def clean_value(text, aggressive=False):
     
     # V2.4 — ACADEMIC UNICODE WHITELISTING (Pre-processing)
     # Drop EVERYTHING except basic Latin and French. Technical symbols are pure noise here.
-    text = re.sub(r'[^a-zA-ZÀ-ÿ0-9\s.,\'?!:;()\-—«»\"\/<>\x80-\xff\u0152\u0153\u2026\u2018\u2019\u201C\u201D]', ' ', text)
+    text = re.sub(r'[^a-zA-ZÀ-ÿ0-9\s.,\'?!:;()\-—«»\"\/<>\u0152\u0153\u2026\u2018\u2019\u201C\u201D]', ' ', text)
 
     # Strip any 14-digit ID and surrounding junk anywhere if aggressive
     if aggressive:
@@ -157,7 +157,7 @@ def parse_hybrid_record(chunk_decoded):
             part = part.replace(b'\x05\x19', b"'")
             part = part.replace(b'\x05\x01', b"'")
             part = part.replace(b'\x05', b"'")
-            payload_text = part.decode('mac_roman', errors='replace')
+            payload_text = part.decode('cp1252', errors='replace')
 
         except:
             continue

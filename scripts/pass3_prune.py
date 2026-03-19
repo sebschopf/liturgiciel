@@ -55,6 +55,33 @@ PRUNE_PATTERNS = [
     (r'XY', ' '),
     (r'ZZ', ' '),
     (r'^[A-Z0-9]{2,5}\s+', ''),
+    # Custom binary garbage prunes from testing
+    (r'\b[a-zA-Z]\s+/\s+[a-zA-Z]+\b', ' '),
+    (r'\b[br]\s+[A-Za-z]+\s+(?:b[A-Z]\s+)?(?:/\s*[A-Za-z]+\s*)+', ' '),
+    (r'\b[A-Za-z]+\s*/\s*[A-Za-z]+(?:oR|RG)\b', ' '),
+    (r'r\s+Yz\s+b[A-Z]\s+/.*?(?=\n|$)', ' '),
+    (r'b[A-Z]\s+/\s+ER[a-zA-Z]*', ' '),
+    (r'R\s+/\s+ER[a-zA-Z]*', ' '),
+    (r'\bRGR[a-zA-Z]*\b', ' '),
+    (r'\bERo[a-zA-Z]*\b', ' '),
+    (r'\bRo[a-zA-Z]*\b', ' '),
+    (r'\b(?:SXF|Xw|XN|ZN|ZB|ZJ|ZJXZ|ZYVI|ZPX|ZLZ|JTxtPage|JNoPage|JPlurSing|IdxPageX|TxtPageX)\b', ' '),
+    (r'\b[A-Z]{1,2}ö[A-Za-z]+\b', ' '),
+    (r'\b[a-z]\s+/\s+[a-z]\b', ' '),
+    (r'⁄\\?\[\s*⁄_ZZZ\[¿ZZ\[À\]\[\[¿', ' '),
+    (r'⁄\\?\[', ' '),
+    (r'Y1X', ' '),
+    (r'Y1', ' '),
+    (r'u\d+\s+j\d+\s+n\d+\s+', ' '),
+    (r'\d+\s+TabT\s+\d+T\s+\d+T', ' '),
+    (r'TabT', ' '),
+    (r'\b\d{7,10}T\b', ' '),
+    (r'\b\d{7,10}S\b', ' '),
+    (r'\b\d{7,10}X\b', ' '),
+    (r'RS\d+\.\d+\.\d+', ' '),
+    (r'Premi re utilisation :\r?', ' '),
+    (r'xPremi re utilisation :\r?', ' '),
+    (r'yPremi re utilisation :\r?', ' '),
 ]
 
 def prune_text(text, normalize_space=True):
@@ -62,7 +89,7 @@ def prune_text(text, normalize_space=True):
         return ""
     
     # academic whitelisting before pruning
-    text = re.sub(r'[^a-zA-ZÀ-ÿ0-9\s.,\'?!:;()\-—«»"\/<>]', '', str(text))
+    text = re.sub(r'[^a-zA-ZÀ-ÿ0-9\s.,\'?!:;()\-—«»"\/<>\x80-\xff\u0152\u0153\u2026\u2018\u2019\u201C\u201D]', '', str(text))
 
     # Appliquer les patterns d'élagage
     for pattern, replacement in PRUNE_PATTERNS:
@@ -81,7 +108,6 @@ def prune_text(text, normalize_space=True):
     return text.strip()
 
 def is_garbage(text):
-    """Detect if a string is likely technical debris using academic heuristics."""
     if not text: return True
     text_str = str(text).strip()
     if len(text_str) < 2: return True
