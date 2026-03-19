@@ -17,25 +17,20 @@ OUTPUT_FILE = os.path.join(_PROJECT_DIR, "liturgi_pruned.json")
 
 # Patterns d'artefacts structurels FileMaker
 PRUNE_PATTERNS = [
-    # Patterns de navigation index (Echanges) : ZV X X _
     (r'ZV\s+[A-Z]\s+[A-Z]\s+_.{1,200}?[zZ]', ' '),
-    # Patterns de marqueurs ZZ[...] et résidus associés
     (r'ZZ\[.*?\]', ' '),
     (r'\[[àéèîïôûœA-Z0-9\\]\]', ' '),
     (r'ZZ\^[àéèîïôûœA-Z0-9\\]', ' '),
-    # Patterns de marqueurs WT : \\WT...\\U ou ]...WT...[...
     (r'\\?WT\d{14}(\[T\d\])?(\\+U)?', ' '),
     (r'\][^\]]{1,50}?WT\d{14}[^\]]{1,50}?\[\w{2}', ' '),
-    # Résidus structurels de Sauvegarde : [Y1X, [T...], [Vb, [B..., X¶[[
     (r'\[Y[12\\]X¶?\[{0,2}', ' '),
     (r'\[T\d{14}\]', ' '),
     (r'\[Vb\]', ' '),
     (r'\[[A-Z][a-z0-9]\]', ' '),
     (r'X¶\[{1,2}', ' '),
-    (r'\[[a-z]\d+', ' '), # Catch [u1 [j1 etc.
-    (r'\\+[A-Z\d ]+', ' '), # Catch \8T \VQ etc
+    (r'\[[a-z]\d+', ' '),
+    (r'\\+[A-Z\d ]+', ' '),
     (r'\[é\[ï\s*\[\]\[\[é', ' '),
-    # Patterns techniques types X_Z, _X, Xã, X_, zX_Z
     (r'z?[A-Z]_[A-Z]', ' '),
     (r'\b_?[A-Z]\b', ' '),
     (r'\b[A-Z]_', ' '),
@@ -43,20 +38,23 @@ PRUNE_PATTERNS = [
     (r'ZZXT', ' '),
     (r'ZZXP', ' '),
     (r'ZZXJ', ' '),
-    (r'z[A-Z][a-z0-9]?', ' '), # Catch zX, zX1 type markers
-    # Padding binaire décodé (K K K, ZZZZZ, Jõ)
+    (r'z[A-Z][a-z0-9]?', ' '),
     (r'(?:\bK\b\s*){3,}', ' '),
     (r'Z{3,}', ' '),
     (r'[Jö]\õ', ' '),
-    # Marqueurs de ponctuation binaire isolés
     (r'[\\[\]\\{\\}|]{2,}', ' '),
-    # Glyphes isolés et codes de contrôle résiduels
     (r'[⁄˙Åˇ•⁄†‡°ı\x80-\xff≤≥]', ' '),
     (r'[\x00-\x08\x0b\x0c\x0e-\x1f]', ' '),
-    # IDs techniques isolés (14 digits)
     (r'\d{14}', ' '),
-    # Longues chaînes sans espaces ( junk binaire)
     (r'[^\s]{40,}', ' '),
+    (r'^\s*\d{1,2}\s+[A-Z]{2,4}\b', ''),
+    (r'^\s*[A-Z]{1,2}\b\s*', ''),
+    (r'\b\d{7,14}\b$', ''),
+    (r'^\s*>\s*', ''),
+    (r'\n\s*r\s+.*$', ''),
+    (r'XY', ' '),
+    (r'ZZ', ' '),
+    (r'^[A-Z0-9]{2,5}\s+', ''),
 ]
 
 def prune_text(text, normalize_space=True):
