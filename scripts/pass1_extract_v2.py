@@ -4,7 +4,7 @@ import re
 from collections import defaultdict
 
 # --- Configuration ---
-SOURCE_DIR = "/home/mous_tik/Documents/LiturgiCiel 2010 WIN"
+SOURCE_DIR = "LitugiCiel"
 FILES = ["Fiches.lit", "Sauvegarde.lit", "Echanges.lit"]
 OUTPUT_FILE = "liturgi_raw_v2.json"
 XOR_VAL = 0x5A
@@ -84,7 +84,7 @@ def clean_value(text, aggressive=False):
     
     # V2.4 — ACADEMIC UNICODE WHITELISTING (Pre-processing)
     # Drop EVERYTHING except basic Latin and French. Technical symbols are pure noise here.
-    text = re.sub(r'[^a-zA-ZÀ-ÿ0-9\s.,\'?!:;()\-—«»"\/<>]', ' ', text)
+    text = re.sub(r'[^a-zA-ZÀ-ÿ0-9\s.,\'?!:;()\-—«»\"\/<>\x80-\xff\u0152\u0153\u2026\u2018\u2019\u201C\u201D]', ' ', text)
 
     # Strip any 14-digit ID and surrounding junk anywhere if aggressive
     if aggressive:
@@ -152,7 +152,13 @@ def parse_hybrid_record(chunk_decoded):
     for part in parts:
         if not part: continue
         try:
-            payload_text = part.decode('mac_roman', errors='ignore')
+
+            # Pre-decode fix for apostrophes often stored as 0x05 0x19 in FileMaker
+            part = part.replace(b'\x05\x19', b"'")
+            part = part.replace(b'\x05\x01', b"'")
+            part = part.replace(b'\x05', b"'")
+            payload_text = part.decode('mac_roman', errors='replace')
+
         except:
             continue
             
